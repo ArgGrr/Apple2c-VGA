@@ -25,6 +25,8 @@ Brief outline of how it works:
 3. Run the 12MHZ clock through the FPGA PLL to get a stable VGA pixel clock. Generate VGA horizontal pixel and vertical line counters, sync pulses and a blanking pulse.
 4. Render the contents of the block RAM, depending which video mode is selected. Since the 4bit words are CREF aligned, we know what the colours will be, no matter what video mode the Apple2c is in.
 
+Verilog project done in [IceStudio](https://icestudio.io/).
+
 Parts required:
 - TinyFPGA BX
 - 5v to 3v3  4 channel logic line level converter
