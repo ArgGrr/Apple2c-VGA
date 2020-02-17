@@ -14,8 +14,8 @@ Various rendering modes, including:
 1.  Monochrome (green)
 2.  CREF mode
 3.  140x192 resolution
-4.  580x192 16 Colours no white text in mixed-mode
-5.  580x192 16 Colours
+4.  580x192 16 Colours no white text
+5.  580x192 16 Colours, white text in tex/mixed mode. Default.
 6.  Test pattern
 7.  Monitor alignment pattern
 
