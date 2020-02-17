@@ -10,6 +10,7 @@ Supports:
 - DHGR colours, including AppleWin-like sub pixel rendering.
 
 Various rendering modes, including:
+
 0.  Monochrome (white)
 1.  Monochrome (green)
 2.  CREF mode
