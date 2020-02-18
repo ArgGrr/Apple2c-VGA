@@ -10,12 +10,13 @@ Supports:
 - DHGR colours, including AppleWin-like sub pixel rendering.
 
 Various rendering modes, including:
+
 0.  Monochrome (white)
 1.  Monochrome (green)
 2.  CREF mode
 3.  140x192 resolution
-4.  580x192 16 Colours no white text in mixed-mode
-5.  580x192 16 Colours
+4.  580x192 16 Colours no white text
+5.  580x192 16 Colours, white text in tex/mixed mode. Default.
 6.  Test pattern
 7.  Monitor alignment pattern
 
@@ -43,5 +44,5 @@ Points of interest:
 - The sub pixel rendering mode is very close if not 100% the same as the Apple2 Win emulator, but I have no hardware to reference it against.
 - Because the Apple 2 TEXT or GRAPHICS mode is stored per line, things like Crazy Cycles 2c do not look exactly the same as a real machine. I.e. if it is drawing a small TEXT section at the start of a line, the whole line will be drawn black & white. Not an issue during normal game play.
 - The 140x192 rendering mode is bugged, the edges of the frame bleed out to the edges of the screen.
-- 80col text in non-white-mixed mode
+- 80col text is only really readable when rendered white / monochrome because of the sub pixel rendering mode.
 
