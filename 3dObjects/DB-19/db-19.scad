@@ -1,8 +1,8 @@
-$fn= $preview ? 10 : 30;
+$fn= $preview ? 8 : 30;
 
 //Tolerance between printed surfaces, accounts for expansion of pla in x/y direction.
 tol = 0.1;
-pin_tol = 0.05;
+pin_tol = 0.2;
 
 Pin_Count=19;
 pinx = 2.77;
@@ -36,31 +36,33 @@ backingz= (backheight + backingh + tol)*-1;
 //obsolete height of the backshell
 shell_outer_height=20;
 shell_inner_height=8.5;
-shell_wall=2;
+shell_wall=1.5;
 //Radius of the wire hole out of the backshell
 shell_hole=3;
 
-//Render main parts
 
+//Render main parts
 plug();
 
-translate([0,-1,0])
+translate([0,-5,0])
     backshell_half();
 
-//translate([0,5,0])
-//    rotate([0,0,180])
-//    backshell_half();
 
 
 module backshell_half()
 {
     //alignment tab
     color("olive")
-    translate([dimA/2/1.5 - .10,-2.5,-shell_outer_height*.8])
+    translate([dimA/2/1.5 - .9, -1, -shell_outer_height*.85])
         rotate([0,0,10])
-        cube([.5,3,5]);
+        cube([1,3,2.5],true);
     
-
+    //alignment tab
+    color("olive")
+    translate([(dimA/2/1.5 - .9)*-1, -1, -shell_outer_height*.65])
+        rotate([0,0,-10])
+        cube([1,3,2.5],true);
+    
     
     difference()
     {
@@ -96,7 +98,11 @@ module backshell_half()
                     cube([100,50,50]);  
                 
                 front_block(0.1);
-                back_block(0.1);
+                //back_block(0.1);
+                //Create a simpler block that doesn't have pin cutouts on it
+                color("orange")
+                translate([0,0,backingz-0.1])
+                RoundedCube2D(dimA+0.1*2,dimD+0.1*2,backingh+0.1*2,backr);                
 
                 color("blue")
                 translate([0,0,-shell_outer_height])
@@ -116,19 +122,25 @@ module backshell_half()
                     translate([-dimA/2/1.5+1.5,-15,-17])
                     cube([1,30,3]);
             
-            
-                //Logo
-                color("black")
-                    rotate([90,0,0])
-                    scale([0.5,0.5,1])
-                    translate([-11.25,-32,(dimD/2)+.3])
-                    linear_extrude(height=1)
-                    import("floppy.svg");
+                logo();
+
+                    
             }
     }
 
 
 }           
+
+module logo(thickness=1)
+{
+    translate([0, dimD /-2 - shell_wall + 0.4,shell_outer_height/-2])
+        color("black")
+        rotate([90,0,0])
+        scale([0.70,0.70,1])
+         translate([-11.3,-11.3,0])
+        linear_extrude(height=thickness)
+        import("floppy.svg");
+}
 
 module plug()
 {
@@ -138,7 +150,7 @@ module plug()
         {
             color("lightblue")
                 translate([0,0,0])
-                Shroud();
+                Shroud(0.1);
                 
             color("lightgreen")
                 front_block();
@@ -208,13 +220,19 @@ module front_edge(tolerance=0)
 
 
 //The D shaped part of the plug that fits over the socket
-module Shroud()
+module Shroud(tolerance=0)
 { 
     difference()
     {
-        trapezium(dimC+insertwall*2, dimE+insertwall*2, shroundheight, insertroundOut,  10);
+        union()
+        {
+            color("green")
+            trapezium(dimC+insertwall*2, dimE+insertwall*2, shroundheight, insertroundOut,  5);
+            color("red")
+            trap_fillet(dimC+insertwall*2+2, dimE+insertwall*2+2, 5, insertroundOut+1,  5);
+        };
         translate([0,0,-1])
-        trapezium(dimC, dimE, shroundheight+2, insertroundIn, 10);
+        trapezium(dimC+tolerance*2, dimE+tolerance*2, shroundheight+2, insertroundIn, 5);
     }
 }
 
@@ -265,24 +283,34 @@ module PinArray(tolerance=0)
 
 module Pin(tolerance=0)
 {
-
+    
+    r1=1.69;
+    h1=4.2;
+    
+    r2=2.15;
+    h2a=1.3;
+    h2b=0.6;
+    
+    r3=1.04;
+    h3=8.2;
+    
     //base
-    cylinder(r=(1.69+tolerance)/2,h=4.2);
+    cylinder(r=(r1+tolerance)/2,h=h1);
     
     //clip
-    translate([0,0,4.2])
-    cylinder(r=(1.85+tolerance)/2,h=1.3);
+    translate([0,0,h1])
+    cylinder(r=(r2+tolerance)/2,h=h2a);
 
-    translate([0,0,4.2+1.3])
-    cylinder(r1=(1.85+tolerance)/2, r2= 1.25 / 2, h=0.6);
+    translate([0,0,h1+h2a])
+    cylinder(r1=(r2+tolerance)/2, r2= 1.25 / 2, h=0.6);
     
     //contact area
-    translate([0,0,4.2+1.9])
-    cylinder(r=(1.04+tolerance)/2,h=8.2 - (1.04/2));
+    translate([0,0,h1+h2a+h2b])
+    cylinder(r=(r3+tolerance)/2,h=h3 - (r3/2));
     
     //round end
-    translate([0,0,4.2+1.9+8.2 - ((1.04+tolerance)/2)])
-    sphere(r=(1.04+tolerance)/2);
+    translate([0,0,h1+h2a+h2b+h3 - ((r3+tolerance)/2)])
+    sphere(r=(r3+tolerance)/2);
 
 }
 
@@ -321,6 +349,31 @@ module trapezium(dx, dy, dz, rad, angle)
         cylinder(r=rad, h=dh);
     }
 }
+
+module trap_fillet(dx, dy, dz, rad, angle)
+{
+    dh=0.1;
+    tx= dx - rad*2;
+    ty= dy - rad*2;
+    
+    tdelta = sin(angle) * dy;
+    
+    translate([dx/-2,dy/-2,0])
+    minkowski()
+    {
+        translate([rad,rad,0])
+        linear_extrude(height=0.01)
+        polygon(points=[[0,ty],
+                        [tx,ty],
+                        [tx-tdelta,0],
+                        [tdelta,0],
+                        [0,ty]]);
+        cylinder(r1=rad, r2=0, h=dz);
+    }
+}
+
+
+
 //Generic cube shape rounded on x-y plane.
 module RoundedCube2D(dx,dy,dz,rad)
 {
@@ -332,11 +385,13 @@ module RoundedCube2D(dx,dy,dz,rad)
         cube([dx - rad * 2, dy - rad * 2, dz - dh ], false);
         cylinder(r=rad, h=dh);
     }
+
 }
 
 //Generic cube shape rounded on all planes
 module RoundedCube3D(dx,dy,dz,rad)
 {
+    
     translate([dx/-2,dy/-2,0])
     minkowski()
     {
@@ -344,4 +399,5 @@ module RoundedCube3D(dx,dy,dz,rad)
         cube([dx - rad * 2, dy - rad * 2, dz - rad * 2 ], false);
         sphere(r=rad);
     }
+  
 }
