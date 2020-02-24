@@ -1040,4 +1040,9 @@
   (auto_rotate true) (mirror false) (value "{{PROJECT}}")
  )
 
+ (hole 0de3803b-28c7-4f13-adc1-d104feb581c8 (diameter 3.0) (position 2.54 48.26))
+ (hole 26f3c113-9477-4a4d-881b-e776ed5ad8ba (diameter 3.0) (position 72.39 48.26))
+ (hole 422c64cf-d6a3-4be2-8645-384f639caecc (diameter 3.0) (position 72.39 2.54))
+ (hole d1a7aa27-76bb-4361-b66e-fc7684aed9a3 (diameter 3.0) (position 2.54 2.54))
+
 )
