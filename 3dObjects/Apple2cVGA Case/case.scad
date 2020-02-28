@@ -22,105 +22,79 @@ case_depth=board_depth+3;
 case_round=2;
 corner_block=6;
 
-case_top_elevate=20;
+case_top_elevate=5;
 
-cap_height=case_top_height-5.4;
+cap_height=4;
+cap_rad=5;
 
-/*
+button_x=49.53;
+button_y=6.35;
+
+//Board
 translate([board_width/-2,board_depth/-2,4.1])
     Apple2cVGA();
 
-
+//Button extension
+translate([board_width/-2,board_depth/-2,case_top_elevate-1])
+    translate([button_x,button_y,10-tol])
+    cap();
+    
+//Case top
 difference()
 {
-color("lightblue",0.3)
-    translate([0,0,case_top_elevate])
-        case_top();
-
+    union()
+    {
+        color("lightblue",0.3)
+            translate([0,0,case_top_elevate])
+            case_top();
+        
+        color("purple",.4)
+            translate([board_width/-2,board_depth/-2,case_top_elevate])
+            translate([button_x,button_y,case_top_height-5])
+            cylinder(r=cap_rad+wall,h=3);   
+        
+    }
+    
     translate([board_width/-2,board_depth/-2,case_top_elevate-1])
         button_cutout(tol);    
-}   
+}
+
+//Case bottom
 color("lightgreen")
     case_bottom();
-*/
 
-cap();
-
-module cap(tolerance=0)
-{
-    difference()
-    {
-        translate([0,0,0])
-            color("yellow",0.75)
-            union()
-            {
-                difference()
-                {
-                    minkowski()
-                    {
-                        translate([0,0,3])
-                        cylinder(r=11.44/2-0.5*2,h=cap_height-0.5*2);
-                        sphere(r=0.5);
-                    }
-                    union()
-                    {
-                        cylinder(r=11.44/2-wall*2,h=5.6);
-                        
-                        translate([0,0,cap_height-0.4+2.5])
-                            color("red")
-                            linear_extrude(0.5)
-                            text("MODE",size=2,halign="center",valign="center");
-                        
-
-                    }
-                }
-                    
-                translate([0,0,cap_height-2+2.5])
-                    cylinder(r=12.86/2,h=0.5);
-
-                cap_leg(tolerance);
-                rotate([0,0,180])
-                    cap_leg(tolerance);
-                translate([3/-2,3.81/2,0.5])
-                    cube([3,1,4.5]);
-                rotate([0,0,180])
-                    translate([3/-2,3.81/2,0.5])
-                    cube([3,1,4.5]);        
-
-            }
-        cap_button_top(0.1);
-    }
-
-}
-module cap_leg(tolerance=0)
-{
-    translate([3.81/2,3.81/-2,0])
-        cube([1,3.81,5]);
-
-    translate([3.81/2+0.3,0,0])
-    intersection()
-    {
-        color("red")
-            translate([0.07,0,.5])
-            rotate([0,45,0])
-            cube([1,3.81,1],true);
-        color("green")
-            translate([-1,3.81/-2,0])
-            cube([1,3.81,1]);
-    } 
-}
 
 //
-module cap_button_top(tolerance=0)
+module button_cutout(tolerance=0)
 {
-    //top of button
-    translate([0,0,1+2.1/2])
-        cube([3.8-tolerance*2,3.8-tolerance*2,2.1],true);
-    translate([0,0,.5])
-        cube([3-tolerance*2,3-tolerance*2,1],true);
-    translate([0,0,-1])
-        cylinder(r=6.8/2,h=1); 
-    
+    translate([49.53,6.35])
+        cylinder(r=cap_rad+tolerance,h=case_top_height+1);
+}
+module cap(tolerance=0)
+{
+    //Not a replacement, should sit on top of button cap in a tube set into the lid.
+    translate([0,0,0])
+
+        difference()
+        {
+            color("yellow")
+            minkowski()
+            {
+                translate([0,0,3])
+                cylinder(r=cap_rad-0.5+tolerance,h=cap_height-0.5*2);
+                sphere(r=0.5);
+            }
+
+                translate([0,0,cap_height-0.4+2.5])
+                    color("red")
+                    linear_extrude(0.5)
+                    text("MODE",size=2,halign="center",valign="center");
+
+        }
+        color("green")
+            translate([0,0,2.5])
+            cylinder(r=cap_rad+wall+tolerance,h=0.5);
+
 }
 
 //
@@ -230,15 +204,10 @@ module Apple2cVGA()
     rotate([90,0,-90])
     a2_plug();
     
+    //Pretend it's a VGA socket, should be same size.
     translate([board_width+1.5,board_depth/2,7])
     rotate([90,0,90])
     vga_plug();
-}
-//
-module button_cutout(tolerance=0)
-{
-    translate([49.53,6.35,0])
-        cylinder(r=11.44/2+tolerance,h=case_top_height+1);
 }
 //
 module mode_button()
@@ -249,7 +218,7 @@ module mode_button()
     //                              t     g    l    i
     //                              h     h         t    d    h    f      d      h     s    f
     //                                                             d                   t    h
-    square_button(["button_12mm",  12,  4.0, 0.8, 1.5, 6.8, 4.3, 12.86, 11.44, cap_height, 2.7, 1.4]);   
+    square_button(["button_12mm",  12,  4.0, 0.8, 1.5, 6.8, 4.3, 12.86, 11.44, 8.15, 2.7, 1.4]);   
 }
 //
 module a2_plug()
