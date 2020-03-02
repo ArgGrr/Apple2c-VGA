@@ -22,7 +22,7 @@ case_depth=board_depth+3;
 case_round=2;
 corner_block=6;
 
-case_top_elevate=5;
+case_top_elevate=10;
 
 cap_height=4;
 cap_rad=5;
@@ -30,9 +30,19 @@ cap_rad=5;
 button_x=49.53;
 button_y=6.35;
 
+//Drill holes for screws in corners
+// could make the corner blocks related to this size and move the drill holes etc
+screw_r1=1.5;
+screw_h1=10;
+screw_r2=3;
+screw_h2=2;
+
+
 //Board
-translate([board_width/-2,board_depth/-2,4.1])
-    Apple2cVGA();
+//translate([board_width/-2,board_depth/-2,4.1])
+//    Apple2cVGA();
+
+
 
 //Button extension
 translate([board_width/-2,board_depth/-2,case_top_elevate-1])
@@ -54,10 +64,28 @@ difference()
             cylinder(r=cap_rad+wall,h=3);   
         
     }
-    
-    translate([board_width/-2,board_depth/-2,case_top_elevate-1])
-        button_cutout(tol);    
+    union()
+    {
+        translate([board_width/-2,board_depth/-2,case_top_elevate-1])
+            button_cutout(tol);
+        translate([0,0,case_top_height+case_top_elevate-2-0.4])
+            rotate([0,0,225])
+            color("red")
+            linear_extrude(2)
+            text("Apple][c VGA",size=7,halign="center",valign="center");
+        translate([14,-5,case_top_height+case_top_elevate-2-0.4])
+            rotate([0,0,225])
+            color("red")
+            linear_extrude(2)
+            text("RESET",size=2,halign="center",valign="center");
+        translate([board_width/-2,board_depth/-2,4.1])
+            Apple2cVGA();
+        translate([board_width/-2,board_depth/-2,case_top_elevate])
+            board_drill(h1=case_top_height-2);
+    }
 }
+
+
 
 //Case bottom
 color("lightgreen")
@@ -70,6 +98,7 @@ module button_cutout(tolerance=0)
     translate([49.53,6.35])
         cylinder(r=cap_rad+tolerance,h=case_top_height+1);
 }
+//
 module cap(tolerance=0)
 {
     //Not a replacement, should sit on top of button cap in a tube set into the lid.
@@ -86,6 +115,7 @@ module cap(tolerance=0)
             }
 
                 translate([0,0,cap_height-0.4+2.5])
+                    rotate([0,0,270])
                     color("red")
                     linear_extrude(0.5)
                     text("MODE",size=2,halign="center",valign="center");
@@ -154,8 +184,10 @@ module case_bottom()
                 cube([board_width+tol*2,board_depth+tol*2,10],true);
                 
                 //Drill out the screw drill holes into the base
-                translate([board_width/-2,board_depth/-2,5])
+                translate([board_width/-2,board_depth/-2,3.5])
                     board_drill();
+                
+
             }
 
                 
@@ -193,7 +225,14 @@ module Apple2cVGA()
         translate([48.26,30.48,2.5])
             cube([18.5,35.6,4],true);    
 
-
+    //cutout for USB plug
+    color("red")
+        translate([48.26,50,2.5])
+            RoundedCube3D(11,11,7,.5);    
+    //cutout for reset button
+    color("red")
+        translate([48.26,15,2.5])
+            cylinder(r=1,h=20);
 
     //Button
     translate([49.53,6.35,0])
@@ -244,26 +283,38 @@ module vga_plug()
         [9.26, 7.90],       //Widths of the D for plug and socket
         12.55,              //Width of the flange
         10.72,              //From the front to the back of the metal part
-        6,              //From the back of the flange to the front
+        6,                  //From the back of the flange to the front
         1.12,               //Thickness of the flange
         15],                //Number of ways
         idc=true ,pcb=true);  
 }
 //
-module board_drill()
+module board_drill(h1=screw_h1,h2=screw_h2,r1=screw_r1,r2=screw_r2)
 {
-             color("lime")
-                translate([grid,grid,-5])
-                cylinder(r=1.5,h=10);
-             color("lime")
-            translate([board_width-grid,grid,-5])
-                cylinder(r=1.5,h=10);
-             color("lime")
-            translate([grid,board_depth-grid,-5])
-                cylinder(r=1.5,h=10);
-             color("lime")
-            translate([board_width-grid,board_depth-grid,-5])
-                cylinder(r=1.5,h=10);  
+    color("lime")
+        translate([grid,grid,-5])
+        union() {
+            cylinder(r=r1,h=h1);
+            cylinder(r=r2,h=h2);
+        }
+    color("lime")
+        translate([board_width-grid,grid,-5])
+        union() {
+            cylinder(r=r1,h=h1);
+            cylinder(r=r2,h=h2);
+        }
+    color("lime")
+        translate([grid,board_depth-grid,-5])
+        union() {
+            cylinder(r=r1,h=h1);
+            cylinder(r=r2,h=h2);
+        }
+    color("lime")
+        translate([board_width-grid,board_depth-grid,-5])
+        union() {
+            cylinder(r=r1,h=h1);
+            cylinder(r=r2,h=h2);
+        }
 }
 
 
