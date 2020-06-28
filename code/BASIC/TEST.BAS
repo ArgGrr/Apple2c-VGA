@@ -10,20 +10,17 @@
 130 FOR B=0 TO 7
 170 FOR C=0 TO 15
 180 V = C + B * 16
-
                                |
-ABCDABC DABCDAB CDABCDA BCDABCD ABCDABC
-0123456701234567012345670123456701234567
-CCCC...|       |       |       |       |                                
-....BBB|       |       |       |       |
-       |BAAAA..|       |       |       |
-       |.......|       |       |       |
-	   |       |..CCCCB|       |       |       
-	   |	   |       |BBBAAAA|       |
-       |       |       |       |.......|
-
-
-
+190 REM ABCDABC DABCDAB CDABCDA BCDABCD ABCDABC
+191 REM 0123456701234567012345670123456701234567
+192 REM CCCC...|       |       |       |       |                                
+193 REM ....BBB|       |       |       |       |
+194 REM        |BAAAA..|       |       |       |
+195 REM        |.......|       |       |       |
+196 REM 	   |       |..CCCCB|       |       |       
+197 REM 	   |	   |       |BBBAAAA|       |
+198 REM        |       |       |       |.......|
+199 REM
 
 200 COL = C + B * 16	: H= 0 + AD: GOSUB 1000	:REM 1
 210 COL = B > 127 + A*2	: H= 1 + AD: GOSUB 1000	:REM 1
@@ -58,8 +55,6 @@ CCCC...|       |       |       |       |
 2070 POKE A,0
 2080 NEXT
 2090 RETURN
-
-
 
 2999 REM BIN TO DEC
 3000 L = LEN (N$) : IF L=0 THEN RETURN
