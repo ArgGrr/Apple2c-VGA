@@ -1,0 +1,13 @@
+Quantity;Designators;Value;Device;Package
+1;CJ1;CJMCU;CJMCU;CJMCU
+1;EXP1;A2_exp_port;A2_exp_port;DB15_2ROW
+1;FPGA1;TinyFPGA BX;TinyFPGA BX;TinyFPGA BX
+1;J1;Vga;Vga;DHR-H15SR-D
+1;R1;10K;Resistor 2012 (0805);RESC2012 (0805)
+3;R2, R5, R8;2,200Ω;Resistor 2012 (0805);RESC2012 (0805)
+3;R3, R6, R9;1,500Ω;Resistor 2012 (0805);RESC2012 (0805)
+3;R4, R7, R10;560Ω;Resistor 2012 (0805);RESC2012 (0805)
+1;R11;1K;Resistor 2012 (0805);RESC2012 (0805)
+1;S1;Video Mode;button;Button
+1;S2;RESET;;
+1;U2;Reg;Reg;Reg
